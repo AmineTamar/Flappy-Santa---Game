@@ -11,8 +11,52 @@ let bird = {
   birdWidth: 34,
 };
 
+let pipeVelocity = -2; 
+
+let pipes = [];
+
 birdImg = new Image();
 birdImg.src = "/Assets/flappybird.png";
+
+TopPipeImg= new Image();
+TopPipeImg.src = "/Assets/toppipe.png";
+
+
+let TopPipe = {
+          positionX : boardWidth,
+          positionY : 0,
+          pipeHeight : 512,
+          pipeWidth : 64
+        
+        }
+
+
+
+
+let drawPipes = function(){
+
+  let randomPipeY = TopPipe.positionY - TopPipe.pipeHeight/4 - Math.random()*(TopPipe.pipeHeight/2)
+ 
+  let TopPipes = {
+    img :TopPipeImg,
+    positionX : TopPipe.positionX,
+    positionY : randomPipeY,
+    height : TopPipe.pipeHeight,
+    width : TopPipe.pipeWidth ,
+    passed : false
+  }
+
+
+
+  pipes.push(TopPipes)
+
+  
+
+
+  }
+
+
+
 
 let drawBird = function () {
   context.drawImage(
@@ -24,7 +68,10 @@ let drawBird = function () {
   );
 };
 
+
+
 birdImg.onload = drawBird;
+
 
 window.onload = function () {
   board = document.getElementById("board");
@@ -32,11 +79,26 @@ window.onload = function () {
   board.height = boardHeight;
   board.width = boardWidth;
 
+
+  setInterval(drawPipes,1500);
+
   requestAnimationFrame(update);
 };
 
 function update() {
   context.clearRect(0, 0, board.width, board.height);
   drawBird();
+
+ pipes.forEach((pipe) => {
+
+context.drawImage(pipe.img, pipe.positionX,pipe.positionY,pipe.width,pipe.height)
+pipe.positionX = pipe.positionX + pipeVelocity;
+
+
+ }) 
+  
+
   requestAnimationFrame(update);
+
+  
 }
