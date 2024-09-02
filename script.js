@@ -15,7 +15,8 @@ let pipeVelocity = -2;
 
 let pipes = [];
 
-
+let birdYvelocity = 0;
+let gravity = 0.4;
 
 birdImg = new Image();
 birdImg.src = "/Assets/flappybird.png";
@@ -25,9 +26,6 @@ TopPipeImg.src = "/Assets/toppipe.png";
 
 BottomPipeImg = new Image();
 BottomPipeImg.src = "/Assets/bottompipe.png";
-
-
-
 
 let TopPipe = {
   positionX: boardWidth,
@@ -43,15 +41,13 @@ let BottomPipe = {
   pipeWidth: 64,
 };
 
-
-
 let drawPipes = function () {
   let randomPipeY =
     TopPipe.positionY -
     TopPipe.pipeHeight / 4 -
     Math.random() * (TopPipe.pipeHeight / 2);
 
-    let openingSpace = TopPipe.pipeHeight/4
+  let openingSpace = TopPipe.pipeHeight / 4;
 
   let TopPipes = {
     img: TopPipeImg,
@@ -65,18 +61,15 @@ let drawPipes = function () {
   pipes.push(TopPipes);
 
   let bottomPipes = {
-
     img: BottomPipeImg,
     positionX: BottomPipe.positionX,
-    positionY : randomPipeY + TopPipe.pipeHeight+openingSpace,
-    width:BottomPipe.pipeWidth,
-    height:BottomPipe.pipeHeight,
-    passed : false
+    positionY: randomPipeY + TopPipe.pipeHeight + openingSpace,
+    width: BottomPipe.pipeWidth,
+    height: BottomPipe.pipeHeight,
+    passed: false,
+  };
 
-  }
-
-  pipes.push(bottomPipes)
-
+  pipes.push(bottomPipes);
 };
 
 let drawBird = function () {
@@ -89,8 +82,6 @@ let drawBird = function () {
   );
 };
 
-birdImg.onload = drawBird;
-
 window.onload = function () {
   board = document.getElementById("board");
   context = board.getContext("2d");
@@ -100,10 +91,17 @@ window.onload = function () {
   setInterval(drawPipes, 1500);
 
   requestAnimationFrame(update);
+
+  document.addEventListener("keydown", moveBird);
 };
 
 function update() {
   context.clearRect(0, 0, board.width, board.height);
+
+  birdYvelocity += gravity;
+
+  bird.positionY = bird.positionY + birdYvelocity;
+
   drawBird();
 
   pipes.forEach((pipe) => {
@@ -117,12 +115,10 @@ function update() {
     pipe.positionX = pipe.positionX + pipeVelocity;
   });
 
-  
-
-
-
-  
   requestAnimationFrame(update);
 }
 
-
+function moveBird(e) {
+  if (e.code === "Space") {
+birdYvelocity=-5;  }
+}
