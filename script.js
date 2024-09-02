@@ -15,7 +15,7 @@ let pipeVelocity = -2;
 
 let pipes = [];
 
-let bottompipes = [];
+
 
 birdImg = new Image();
 birdImg.src = "/Assets/flappybird.png";
@@ -37,11 +37,12 @@ let TopPipe = {
 };
 
 let BottomPipe = {
-  positionX: boardHeight,
- // positionY:  -360,
+  positionX: boardWidth,
+  positionY: 0,
   pipeHeight: 512,
   pipeWidth: 64,
 };
+
 
 
 let drawPipes = function () {
@@ -49,6 +50,8 @@ let drawPipes = function () {
     TopPipe.positionY -
     TopPipe.pipeHeight / 4 -
     Math.random() * (TopPipe.pipeHeight / 2);
+
+    let openingSpace = TopPipe.pipeHeight/4
 
   let TopPipes = {
     img: TopPipeImg,
@@ -59,17 +62,21 @@ let drawPipes = function () {
     passed: false,
   };
 
-  let BottomPipes = {
-    img: BottomPipeImg,
-    positionX: boardHeight,
-    positionY: boardWidth,
-    height: BottomPipe.pipeHeight,
-    width: BottomPipe.pipeWidth,
-    passed: false,
-  };
-
   pipes.push(TopPipes);
-  pipes.push(BottomPipes);
+
+  let bottomPipes = {
+
+    img: BottomPipeImg,
+    positionX: BottomPipe.positionX,
+    positionY : randomPipeY + TopPipe.pipeHeight+openingSpace,
+    width:BottomPipe.pipeWidth,
+    height:BottomPipe.pipeHeight,
+    passed : false
+
+  }
+
+  pipes.push(bottomPipes)
+
 };
 
 let drawBird = function () {
@@ -110,16 +117,12 @@ function update() {
     pipe.positionX = pipe.positionX + pipeVelocity;
   });
 
-  bottompipes.forEach((pipe) => {
-    context.drawImage(
-      pipe.img,
-      pipe.positionX,
-      pipe.positionY,
-      pipe.width,
-      pipe.height
-    );
-    pipe.positionX = pipe.positionX + pipeVelocity;
-  });
+  
 
+
+
+  
   requestAnimationFrame(update);
 }
+
+
