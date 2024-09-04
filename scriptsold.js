@@ -10,7 +10,7 @@ let bird = {
   birdHeight: 24,
   birdWidth: 34,
 };
-
+let pipeSpeed = -0.25;
 let pipeVelocity = -2;
 
 let pipes = [];
@@ -91,8 +91,10 @@ window.onload = function () {
   board.width = boardWidth;
 
   setInterval(drawPipes, 1500);
+  setInterval(pipeSpeedincrease,5000);
 
   requestAnimationFrame(update);
+
 
   document.addEventListener("keydown", moveBird);
 };
@@ -118,7 +120,7 @@ function update() {
     );
     pipe.positionX = pipe.positionX + pipeVelocity;
   });
-
+ 
   requestAnimationFrame(update);
 }
 
@@ -126,3 +128,14 @@ function moveBird(e) {
   if (e.code === "Space") {
 birdYvelocity=-5;  }
 }
+
+function pipeSpeedincrease (){
+
+    pipeVelocity = pipeVelocity + pipeSpeed;
+
+    if (pipeSpeed < -10) {
+        pipeSpeed= -10;
+    }
+  }
+  
+  

@@ -11,6 +11,8 @@ let bird = {
   birdWidth: 34,
 };
 
+let score =0;
+
 let pipeVelocity = -2;
 let pipes = [];
 let birdYvelocity = 0;
@@ -91,16 +93,35 @@ function detectCollision(bird, pipe) {
   );
 }
 
+
+
 function gameOver() {
 
-  context.fillStyle = "red";
-  context.font = "40px Arial";
-  context.fillText("Game Over", boardWidth / 5, boardHeight / 2);
-  context.font = "20px Arial";
-  context.fillText("Press Space to Play Again", boardWidth / 6, boardHeight / 2 + 40);
+  context.fillStyle = "rgba(0, 0, 0, 0.5)"; // semi-transparent black
+  context.fillRect(0, 0, boardWidth, boardHeight);
+
+  context.fillStyle = "rgba(0, 0, 0, 0.5)"; // semi-transparent black
+  context.fillRect(0, 0, boardWidth, boardHeight);
+
+  // Draw the "Game Over" text
+  context.font = "48px Arial";
+  context.fillStyle = "white";
+  context.textAlign = "center";
+  context.fillText("Game Over", boardWidth / 2, boardHeight / 2);
+  context.font = "24px Arial";
+  context.fillText("Press Space to start again", boardWidth / 2, boardHeight / 2+100);
+
+  // Optionally: Display the score below the game over text
+  context.font = "24px Arial";
+  context.fillText(`Score: ${score}`, boardWidth / 2, boardHeight / 2 + 50);
+ 
 
   gameRunning = false;
   gameOverMessageShown = true;
+
+
+ 
+
 }
 
 function resetGame() {
@@ -109,17 +130,30 @@ function resetGame() {
   pipes = [];
   gameRunning = true;
   gameOverMessageShown = false;
+  pipeVelocity = -2;
+  score = 0;
   requestAnimationFrame(update);
 }
 
 function update() {
-  if (!gameRunning) return;
+  if (!gameRunning) {
+    gameOver();
+    return;
+  }
+   
+
+  
 
   context.clearRect(0, 0, board.width, board.height);
 
   birdYvelocity += gravity;
+  context.fillStyle = "white ";
+  context.font = "25px Arial";
+  context.fillText(`Score: ${score}`, boardWidth / 10+30 , boardHeight / 10);
+
 
   if (bird.positionY + bird.birdHeight >= boardHeight) {
+  
     gameOver();
     return;
   }
@@ -139,15 +173,22 @@ function update() {
     pipe.positionX = pipe.positionX + pipeVelocity;
 
     if (detectCollision(bird, pipe)) {
+     
       gameOver();
       return;
     }
 
     if (pipe.positionX + pipe.width < 0) {
       pipes.splice(index, 1);
+score++
+
     }
   });
 
+ 
+  
+
+  
   requestAnimationFrame(update);
 }
 
@@ -168,6 +209,11 @@ window.onload = function () {
   board.width = boardWidth;
 
   setInterval(drawPipes, 1500);
+
   requestAnimationFrame(update);
   document.addEventListener("keydown", moveBird);
+  
 };
+
+
+
