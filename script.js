@@ -202,6 +202,15 @@ function moveBird(e) {
   }
 }
 
+function Touchevent(e){
+  e.preventDefault(); 
+if (gameOverMessageShown) {
+  resetGame();
+}
+  else birdYvelocity = -5;
+
+}
+
 window.onload = function () {
   board = document.getElementById("board");
   context = board.getContext("2d");
@@ -212,6 +221,7 @@ window.onload = function () {
 
   requestAnimationFrame(update);
   document.addEventListener("keydown", moveBird);
+  document.addEventListener("touchstart", Touchevent);
   
 };
 
