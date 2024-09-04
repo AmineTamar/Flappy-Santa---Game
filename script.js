@@ -193,7 +193,7 @@ score++
 }
 
 function moveBird(e) {
-  if (e.code === "Space") {
+  if (e.code === "Space" || e.type ==="click") {
     if (gameOverMessageShown) {
       resetGame(); // Restart the game if it's over
     } else {
@@ -203,7 +203,7 @@ function moveBird(e) {
 }
 
 function Touchevent(e){
-  e.preventDefault(); 
+  e.preventDefault();  
 if (gameOverMessageShown) {
   resetGame();
 }
@@ -221,6 +221,7 @@ window.onload = function () {
 
   requestAnimationFrame(update);
   document.addEventListener("keydown", moveBird);
+  document.addEventListener("click", moveBird);
   document.addEventListener("touchstart", Touchevent);
   
 };
