@@ -16,7 +16,7 @@ let pipeVelocity = -2;
 let pipes = [];
 
 let birdYvelocity = 0;
-let gravity = 0.4;
+let gravity = 0;
 
 
 
