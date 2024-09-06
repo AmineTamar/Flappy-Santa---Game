@@ -21,13 +21,13 @@ let gameRunning = true;
 let gameOverMessageShown = false;
 
 birdImg = new Image();
-birdImg.src = "/Assets/flappybird.png";
+birdImg.src = "Assets/flappybird.png";
 
 let TopPipeImg = new Image();
-TopPipeImg.src = "/Assets/toppipe.png";
+TopPipeImg.src = "Assets/toppipe.png";
 
 let BottomPipeImg = new Image();
-BottomPipeImg.src = "/Assets/bottompipe.png";
+BottomPipeImg.src = "Assets/bottompipe.png";
 
 let TopPipe = {
   positionX: boardWidth,
