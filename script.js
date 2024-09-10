@@ -17,7 +17,7 @@ let score = 0; // Initial game score
 let pipeVelocity = -1; // Speed at which the pipes move (negative to move left)
 let pipes = []; // Array to store pipe objects
 let birdYvelocity = 0; // Vertical velocity of the bird (updated with gravity and player input)
-let gravity = 0.15; // The force pulling the bird down
+let gravity = 0.19; // The force pulling the bird down
 let gameRunning = true; // A flag to check if the game is running
 let gameOverMessageShown = false; // A flag to check if the game over message has been shown
 
@@ -89,11 +89,13 @@ let drawBird = function () {
 
 // Function to detect collisions between the bird and pipes
 function detectCollision(bird, pipe) {
+
+  const margin = 7; // Margin of error for easier collisions
   return (
-    bird.positionX < pipe.positionX + pipe.width && // Check if bird's left side is before pipe's right side
-    bird.positionX + bird.birdWidth > pipe.positionX && // Check if bird's right side is after pipe's left side
-    bird.positionY < pipe.positionY + pipe.height && // Check if bird's top side is above pipe's bottom side
-    bird.positionY + bird.birdHeight > pipe.positionY // Check if bird's bottom side is below pipe's top side
+    bird.positionX < pipe.positionX + pipe.width - margin  && // Check if bird's left side is before pipe's right side
+    bird.positionX + bird.birdWidth - margin > pipe.positionX  && // Check if bird's right side is after pipe's left side
+    bird.positionY < pipe.positionY + pipe.height  - margin&& // Check if bird's top side is above pipe's bottom side
+    bird.positionY + bird.birdHeight - margin > pipe.positionY // Check if bird's bottom side is below pipe's top side
   );
 }
 
@@ -123,8 +125,9 @@ function resetGame() {
   pipes = []; // Clear the pipes array
   gameRunning = true; // Set the game to running state
   gameOverMessageShown = false; // Hide the game over message
+  
   pipeVelocity = -1; // Reset the pipe velocity
-  score = 0; // Reset the score
+  score =0 ; // Reset the score
   openingSpace = 200; // Reset the opening space between pipes
   requestAnimationFrame(update); // Start the game loop again
 }
@@ -183,8 +186,8 @@ e.preventDefault();
 }
 
 // Function to handle touch events on mobile devices
-function Touchevent(e) {
-  e.preventDefault(); // Prevent default touch behavior
+function Touchevent(/*e*/) {
+  //e.preventDefault(); // Prevent default touch behavior
   if (gameOverMessageShown) {
     resetGame(); // If game over, reset the game
   } else {
