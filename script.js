@@ -14,10 +14,10 @@ let bird = {
 
 let score = 0; // Initial game score
 
-let pipeVelocity = -1; // Speed at which the pipes move (negative to move left)
+let pipeVelocity = 0 //-1; // Speed at which the pipes move (negative to move left)
 let pipes = []; // Array to store pipe objects
 let birdYvelocity = 0; // Vertical velocity of the bird (updated with gravity and player input)
-let gravity = 0.19; // The force pulling the bird down
+let gravity = 0 // 0.19; // The force pulling the bird down
 let gameRunning = true; // A flag to check if the game is running
 let gameOverMessageShown = false; // A flag to check if the game over message has been shown
 
@@ -125,11 +125,18 @@ function resetGame() {
   pipes = []; // Clear the pipes array
   gameRunning = true; // Set the game to running state
   gameOverMessageShown = false; // Hide the game over message
+  gravity = 0
   
-  pipeVelocity = -1; // Reset the pipe velocity
+  pipeVelocity = 0 //-1; // Reset the pipe velocity
   score =0 ; // Reset the score
   openingSpace = 200; // Reset the opening space between pipes
+
+  showInstructions = true
+
+
+ 
   requestAnimationFrame(update); // Start the game loop again
+
 }
 
 // Function to update the game on every frame
@@ -146,6 +153,11 @@ function update() {
   context.font = "25px Arial"; // Set the font for the score display
   context.fillText(`Score: ${score}`, boardWidth / 10 + 30, boardHeight / 10); // Display the current score
 
+  if (showInstructions) {
+    displayInstructions(); // Show the instructions if the game hasn't started
+  }
+
+  
   if (bird.positionY + bird.birdHeight >= boardHeight) { // Check if the bird has hit the ground
     gameOver();
     return;
@@ -180,7 +192,12 @@ e.preventDefault();
     if (gameOverMessageShown) { // If game over, reset the game
       resetGame();
     } else {
+
+      
       birdYvelocity = -3; // Make the bird jump
+      gravity = 0.19
+      pipeVelocity = -1
+      showInstructions = false
     }
   }
 }
@@ -192,6 +209,9 @@ function Touchevent(/*e*/) {
     resetGame(); // If game over, reset the game
   } else {
     birdYvelocity = -3; // Make the bird jump
+    gravity = 0.19
+    pipeVelocity = -1
+
   }
 }
 
@@ -209,3 +229,19 @@ window.onload = function () {
   document.addEventListener("click", moveBird); // Listen for mouse clicks
   document.addEventListener("touchstart", Touchevent); // Listen for touch events
 };
+
+
+
+
+let showInstructions = true; // Flag to show instructions at the start
+
+// Function to display the instructions
+function displayInstructions() {
+  context.fillStyle = "rgba(0, 0, 0, 0.7)"; // Semi-transparent background
+  context.fillRect(0, 0, boardWidth, boardHeight); // Cover the entire canvas
+  
+  context.font = "16px Arial"; // Set font size and style
+  context.fillStyle = "white"; // Set text color
+  context.textAlign = "center"; // Center-align the text
+  context.fillText("Use Space or Click to Jump", boardWidth / 2, boardHeight / 2 + 20); // Additional instruction
+}
