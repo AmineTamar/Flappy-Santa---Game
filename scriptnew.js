@@ -14,13 +14,13 @@ let bird = {
 
 let score = 0; // Initial game score
 
-let pipeVelocity = -1; // -1 Speed at which the pipes move (negative to move left)
+let pipeVelocity = 0; // Speed at which the pipes move (negative to move left)
 let pipes = []; // Array to store pipe objects
 let birdYvelocity = 0; // Vertical velocity of the bird (updated with gravity and player input)
-let gravity = 0.19 // 0.19; // The force pulling the bird down
-let gameRunning = true; // A flag to check if the game is running
+let gravity = 0; // The force pulling the bird down
+let gameRunning = false; // A flag to check if the game is running
 let gameOverMessageShown = false; // A flag to check if the game over message has been shown
- 
+
 let openingSpace = 200; // Initial space between the top and bottom pipes
 let openingSpaceReductionRate = 5; // Rate at which the opening space decreases over time
 
@@ -89,12 +89,11 @@ let drawBird = function () {
 
 // Function to detect collisions between the bird and pipes
 function detectCollision(bird, pipe) {
-
   const margin = 7; // Margin of error for easier collisions
   return (
-    bird.positionX < pipe.positionX + pipe.width - margin  && // Check if bird's left side is before pipe's right side
-    bird.positionX + bird.birdWidth - margin > pipe.positionX  && // Check if bird's right side is after pipe's left side
-    bird.positionY < pipe.positionY + pipe.height  - margin&& // Check if bird's top side is above pipe's bottom side
+    bird.positionX < pipe.positionX + pipe.width - margin && // Check if bird's left side is before pipe's right side
+    bird.positionX + bird.birdWidth - margin > pipe.positionX && // Check if bird's right side is after pipe's left side
+    bird.positionY < pipe.positionY + pipe.height - margin && // Check if bird's top side is above pipe's bottom side
     bird.positionY + bird.birdHeight - margin > pipe.positionY // Check if bird's bottom side is below pipe's top side
   );
 }
@@ -125,34 +124,38 @@ function resetGame() {
   pipes = []; // Clear the pipes array
   gameRunning = true; // Set the game to running state
   gameOverMessageShown = false; // Hide the game over message
-  gravity = 0.19
-  
-  pipeVelocity = -1; // Reset the pipe velocity
-  score =0 ; // Reset the score
+  gravity = 0;
+  pipeVelocity = 0; // Reset the pipe velocity
+  score = 0; // Reset the score
   openingSpace = 200; // Reset the opening space between pipes
 
+  showInstructions = true;
 
- 
   requestAnimationFrame(update); // Start the game loop again
-
 }
 
 // Function to update the game on every frame
 function update() {
-  if (!gameRunning) { // If the game is over, stop updating
-    gameOver();
-    return;
+  context.clearRect(0, 0, board.width, board.height); // Clear the canvas
+  
+  if (showInstructions) {
+    displayInstructions(); // Show the instructions if the game hasn't started
+    requestAnimationFrame(update); // Continue showing instructions until game starts
+    return; // Exit the update loop early until the game starts
   }
 
-  context.clearRect(0, 0, board.width, board.height); // Clear the canvas
+  if (!gameRunning) {
+    if (gameOverMessageShown) {
+      gameOver(); // Show game over message if applicable
+    }
+    return;
+  }
 
   birdYvelocity += gravity; // Apply gravity to the bird's vertical velocity
   context.fillStyle = "white"; // Set the score text color
   context.font = "25px Arial"; // Set the font for the score display
   context.fillText(`Score: ${score}`, boardWidth / 10 + 30, boardHeight / 10); // Display the current score
- 
 
-  
   if (bird.positionY + bird.birdHeight >= boardHeight) { // Check if the bird has hit the ground
     gameOver();
     return;
@@ -164,9 +167,9 @@ function update() {
 
   pipes.forEach((pipe, index) => {
     context.drawImage(pipe.img, pipe.positionX, pipe.positionY, pipe.width, pipe.height); // Draw each pipe
-    pipe.positionX = pipe.positionX + pipeVelocity; // Move the pipe to the left
+    pipe.positionX += pipeVelocity; // Move the pipe to the left
 
-    if (detectCollision(bird, pipe)) { // Check for collision with the bird
+    if (detectCollision(bird, pipe)) {
       gameOver();
       return;
     }
@@ -182,48 +185,77 @@ function update() {
 
 // Function to handle bird movement when space is pressed or screen is clicked
 function moveBird(e) {
-e.preventDefault();
+  e.preventDefault();
   if (e.code === "Space" || e.type === "click") {
     if (gameOverMessageShown) { // If game over, reset the game
-    resetGame();
+      resetGame();
     } else {
-
-      
       birdYvelocity = -3; // Make the bird jump
-     
- 
-
+      gravity = 0.19;
+      pipeVelocity = -1;
+      showInstructions = false; // Hide the instructions
+      gameRunning = true; // Start the game
     }
   }
 }
 
 // Function to handle touch events on mobile devices
-function Touchevent(/*e*/) {
-  //e.preventDefault(); // Prevent default touch behavior
+function handleTouch(e) {
+  e.preventDefault();
   if (gameOverMessageShown) {
-    resetGame(); // If game over, reset the game
+    resetGame();
   } else {
     birdYvelocity = -3; // Make the bird jump
-    
-
-
+    gravity = 0.19;
+    pipeVelocity = -1;
+    showInstructions = false; // Hide the instructions
+    gameRunning = true; // Start the game
   }
 }
 
-// Function that runs when the window is loaded
+// Function to display instructions on the screen
+function displayInstructions() {
+  context.fillStyle = "rgba(0, 0, 0, 0.5)"; // Semi-transparent background for instructions
+  context.fillRect(0, 0, boardWidth, boardHeight); // Fill the screen with the background
+
+  context.fillStyle = "white"; // Set the text color to white
+  context.font = "36px Arial"; // Set the font for the instructions
+  context.textAlign = "center"; // Center-align the text
+  context.fillText("Flappy Bird", boardWidth / 2, boardHeight / 2 - 50); // Display the game title
+  context.font = "24px Arial"; // Set the font size for the instructions
+  context.fillText("Press Space or Click to Start", boardWidth / 2, boardHeight / 2 + 50); // Display instructions to start the game
+}
+
+// Function to initialize the game
 window.onload = function () {
-  board = document.getElementById("board"); // Get the canvas element by its ID
-  context = board.getContext("2d"); // Get the 2D drawing context
+  board = document.getElementById("board"); // Get the canvas element
+  context = board.getContext("2d"); // Get the 2D drawing context of the canvas
   board.height = boardHeight; // Set the canvas height
   board.width = boardWidth; // Set the canvas width
 
-  setInterval(drawPipes, 1500 * 2); // Draw pipes every 3 seconds
+  document.addEventListener("keydown", moveBird); // Listen for keydown events (for spacebar)
+  document.addEventListener("click", moveBird); // Listen for click events (for mouse click)
+  document.addEventListener("touchstart", handleTouch); // Listen for touch events (for mobile)
+
+  drawPipes(); // Draw the initial set of pipes
 
   requestAnimationFrame(update); // Start the game loop
-  document.addEventListener("keydown", moveBird); // Listen for spacebar key presses
-  document.addEventListener("click", moveBird); // Listen for mouse clicks
-  document.addEventListener("touchstart", Touchevent); // Listen for touch events
 };
 
 
 
+
+function moveBird(e) {
+    e.preventDefault();
+      if (e.code === "Space" || e.type === "click") {
+        if (gameOverMessageShown) { // If game over, reset the game
+          resetGame();
+        } else {
+    
+          
+          birdYvelocity = -3; // Make the bird jump
+         
+    
+        }
+      }
+    }

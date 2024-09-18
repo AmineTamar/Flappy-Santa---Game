@@ -1,68 +1,54 @@
 body {
     text-align: center;
-}
-
-/* Style for the canvas */
-#board {
-    display: block;
-    margin: 0 auto;
-    background: url(Assets/flappybirdbg.png);
   }
   
-  /* Style for the introduction overlay */
-
+  /* Style for the canvas */
+  #board {
+    display: block;
+    margin: 0 auto;
+    background: url(Assets/flappybirdbg.png); /* Background image for the game */
+  }
+  
   /* Overlay Styles */
-.overlay {
+  .overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.75);
+    background-color: rgba(112, 197, 206, 1); /* Match the game background color */
     display: flex;
     justify-content: center;
     align-items: center;
     visibility: hidden;
     opacity: 0;
     transition: visibility 0s, opacity 0.5s;
-}
-
-.overlay-content {
+  }
+  
+  .overlay.show {
+    visibility: visible;
+    opacity: 1;
+  }
+  
+  .overlay-content {
     background-color: #1E2739;
     padding: 20px;
     border-radius: 10px;
     text-align: center;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.25);
-
-     display: flex;
+    display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-}
-
-
-
-.overlay button {
-    margin-top: 10px;
-}
-
-.overlay.show {
-    visibility: visible;
-    opacity: 1;
-}
-
-/* Introduction Page Styles */
-.intro-image {
+  }
+  
+  .overlay-content img {
     width: 100%;
     max-width: 400px;
     height: auto;
     margin: 20px 0;
-}
-
-
-
-
-button {
+  }
+  
+  .overlay-content button {
     margin: 5px;
     padding: 10px 20px;
     font-size: 16px;
@@ -74,7 +60,15 @@ button {
     cursor: pointer;
     transition: background-color 0.3s ease;
     width: 70%;
-    height: auto;
     max-width: 300px;
-}
-
+  }
+  
+  .overlay-content button:hover {
+    background-color: #a0071d;
+  }
+  
+  #instruction-text {
+    font-size: 18px;
+    color: #FFFFFF;
+  }
+  
